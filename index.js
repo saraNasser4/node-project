@@ -1,1 +1,2 @@
-console.log("Hello World!");
+console.log(global);   // window
+console.log(process);  // document
