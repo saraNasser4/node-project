@@ -9,7 +9,10 @@ const server = http.createServer((req,res)=>{
 
     //res.writeHead(500, { 'Content-Type': 'application/jason'});
     //res.end(JSON.stringify({ message: 'Server Error' }));
-
+    
+    console.log(`url: ${req.url}`);
+    console.log(`method: ${req.method}`);
+    
     res.writeHead(200, { 'Content-Type': 'text/html'});
     res.end("<h1>Hello World</h1>");
 })
