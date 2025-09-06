@@ -12,6 +12,7 @@
 //--------------------------------------
 // readFile() - promises
 import fs from 'fs/promises';
+import { join } from 'path';
 
 fs.readFile('./text.txt', 'utf8')
     .then(data => console.log(data))
@@ -30,3 +31,27 @@ fs.readFile('./text.txt', 'utf8')
 
 readFile();
 //--------------------------------------
+// overwrite
+const writeFile = async () => {
+    try {
+      await fs.writeFile('./text.txt', 'Hello, I am writing this pretty text to be added');
+      console.log('File written to...')  
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+writeFile();
+
+
+//append text
+
+const appendFile = async ()=> {
+    try {
+        await fs.appendFile('./text.txt', ' I just wanna add this :/')
+    } catch (err) {
+       console.log(err) 
+    }
+}
+
+appendFile();
