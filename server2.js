@@ -17,7 +17,7 @@ const jsonMiddleware = (req, res, next) => {
     next();
 }
 //Route handler for GET /api/users
-const getUserHandler = (req, res) => {
+const getUsersHandler = (req, res) => {
     res.write(JSON.stringify(users));
     res.end();
 }
@@ -36,6 +36,22 @@ const GetUserByIdHandler = (req, res) => {
     res.end();
 }
 
+// Route handler for POST /api/users
+const CreateUserHandler = (req, res) => {
+    let body = '';
+    req.on("data", (chunk)=> {
+        body += chunk.toString();
+    });
+
+    req.on("end", ()=> {
+        const newUser = JSON.parse(body);
+        users.push(newUser);
+        res.statusCode = 201;
+        res.write(JSON.stringify(newUser));
+        res.end();
+    })
+}
+
 //Route Not found route handler 
 const notFoundRouteHandler = (req, res) => {
     res.statusCode = 404;
@@ -46,14 +62,28 @@ const notFoundRouteHandler = (req, res) => {
 const server = createServer((req, res)=> {
     logger(req, res, ()=> {
         jsonMiddleware(res, req, ()=> {
-            if(req.url === "/api/users" && req.method === "GET") {
-                getUserHandler(req, res);
-    
-            } else if(req.url.match(/\/api\/users\/([0-9]+)/) && req.method === "GET") {
-                GetUserByIdHandler(req, res);
-                                 
-            } else {
-                notFoundRouteHandler(res, req); 
+            switch (req.method) {
+                case "GET":
+                    if(req.url === "/api/users") {
+                        getUsersHandler(req, res);
+            
+                    } else if(req.url.match(/\/api\/users\/([0-9]+)/)) {
+                        GetUserByIdHandler(req, res);
+                                         
+                    } else {
+                        notFoundRouteHandler(res, req); 
+                    }
+                    break;
+
+                case "POST":
+                    if(req.url === "/api/users") {
+                        CreateUserHandler(req, res);
+                    } else {
+                        notFoundRouteHandler(res, req);
+                    }
+            
+                default:
+                    break;
             }
         });
     });
